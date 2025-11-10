@@ -1,18 +1,19 @@
 # config.py
-BOT_TOKEN = "paste_your_bot_token_here"
+BOT_TOKEN = "8466407032:AAEkz0oZg956uRpPBOn0KoQ9PTX5yCKoflI"
 
 # Allowed group chat IDs
 ALLOWED_GROUP_IDS = {
-    -1001234567890,
-    -1009876543210,
-    -1001122334455,
-    -1005566778899,
-    -1009988776655
+    -1002036072316,
+    -1002276727546,
+    -1001942377118,
+    -1001671357572,
+    -1002027891366,
+    -1001861957646
 }
 
 # Admin user IDs allowed to run retrieval / export commands
 ADMIN_IDS = {
-    123456789
+    6006815002
 }
 
 # Database filename
