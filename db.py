@@ -1,7 +1,7 @@
 # db.py
 import aiosqlite
 from typing import List, Tuple, Optional, Dict, Any
-from db import DB_FILENAME
+from configs import DB_FILENAME
 
 CREATE_SQL = """
 CREATE TABLE IF NOT EXISTS messages (

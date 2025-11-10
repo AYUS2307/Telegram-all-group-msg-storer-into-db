@@ -14,7 +14,7 @@ from aiogram.types import Message, FSInputFile
 import db
 import configs
 
-bot = Bot(token=db.BOT_TOKEN)
+bot = Bot(token=configs.BOT_TOKEN)
 dp = Dispatcher()
 
 def utc_iso_from_message_date(msg_date) -> str:
@@ -61,7 +61,7 @@ async def export_messages_cmd(message: Message) -> None:
     chat_id = None
     start_ts = None
     end_ts = None
-    limit = db.DEFAULT_LIMIT
+    limit = configs.DEFAULT_LIMIT
 
     try:
         if len(args) >= 2 and args[1] != "-":
@@ -77,9 +77,9 @@ async def export_messages_cmd(message: Message) -> None:
         return
 
     # Query DB for messages across allowed groups
-    rows = await configs.query_messages_for_export(
+    rows = await db.query_messages_for_export(
         username_or_id=key,
-        allowed_groups=db.ALLOWED_GROUP_IDS,
+        allowed_groups=configs.ALLOWED_GROUP_IDS,
         chat_id=chat_id,
         start_ts=start_ts,
         end_ts=end_ts,
@@ -121,7 +121,7 @@ async def export_messages_cmd(message: Message) -> None:
             pass
 
 async def on_startup():
-    await configs.init_db()
+    await db.init_db()
 
 if __name__ == "__main__":
     try:
