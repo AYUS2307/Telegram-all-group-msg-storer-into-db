@@ -7,7 +7,7 @@ import ujson as json
 from datetime import timezone
 from typing import Optional
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types,F
 from aiogram.filters import Command
 from aiogram.types import Message, FSInputFile
 
@@ -20,7 +20,7 @@ dp = Dispatcher()
 def utc_iso_from_message_date(msg_date) -> str:
     return msg_date.astimezone(timezone.utc).isoformat()
 
-@dp.message(lambda message: message.chat.id in db.ALLOWED_GROUP_IDS, content_types=types.ContentType.ANY)
+@dp.message(F.chat.id.in_set(configs.ALLOWED_GROUP_IDS))
 async def handle_group_message(message: Message) -> None:
     user = message.from_user
     chat = message.chat
@@ -41,14 +41,15 @@ async def handle_group_message(message: Message) -> None:
         timestamp_iso=ts
     )
 
-@dp.message(Command(commands=["export_messages"]))
+@dp.message(Command(commands=["report"]))
 async def export_messages_cmd(message: Message) -> None:
     """
     /export_messages <username_or_userid> [chat_id] [start_iso] [end_iso] [limit]
     Outputs a downloadable JSON file (sent to admin's DM with the bot).
     """
     from_user = message.from_user
-    if not from_user or from_user.id not in db.ADMIN_IDS:
+    print(from_user.id)
+    if not from_user or from_user.id not in configs.ADMIN_IDS:
         await message.reply("Unauthorized. This command is for admins only.")
         return
 
@@ -122,11 +123,27 @@ async def export_messages_cmd(message: Message) -> None:
 
 async def on_startup():
     await db.init_db()
+    # any other startup tasks
+
+async def on_shutdown():
+    # any shutdown tasks before closing session
+    pass
+
+async def main():
+    # 1) startup tasks
+    await on_startup()
+
+    # 2) start polling (this is an awaitable coroutine)
+    try:
+        # await the coroutine so it actually runs inside the same loop
+        await dp.start_polling(bot, skip_updates=True)
+    finally:
+        # 3) cleanup: close HTTP session / DB connections
+        try:
+            await on_shutdown()
+        except Exception:
+            pass
+        await bot.session.close()
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(on_startup())
-        from aiogram import executor
-        executor.start_polling(dp, skip_updates=True)
-    finally:
-        asyncio.run(bot.session.close())
+    asyncio.run(main())
