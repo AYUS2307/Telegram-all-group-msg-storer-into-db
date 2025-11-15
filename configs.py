@@ -1,7 +1,8 @@
-# config.py
+# configs.py
+# PASTE YOUR TOKEN HERE
 BOT_TOKEN = "paste_your_bot_token_here"
 
-# Allowed group chat IDs
+# Allowed group chat IDs (Integers)
 ALLOWED_GROUP_IDS = {
     -1001234567890,
     -1009876543210,

@@ -57,7 +57,6 @@ async def query_messages_for_export(
     """
     Returns messages matching username_or_id (either username without @ or numeric user_id).
     Results sorted by timestamp DESC (latest first).
-    Each row returned as dict with keys: id, user_id, username, first_name, last_name, chat_id, chat_title, message_text, timestamp
     """
     clauses = []
     params = []
